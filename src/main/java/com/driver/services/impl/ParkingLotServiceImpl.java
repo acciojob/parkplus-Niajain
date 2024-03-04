@@ -111,16 +111,25 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         }
         Spot spot=optionalSpot.get();
 
-        if(spot.getParkingLot().getId()!=parkingLotId)
-        {
-//            throw new NotFoundException("Spot does not belong to the specified parking lot");
-            return null;
+//        if(spot.getParkingLot().getId()!=parkingLotId)
+//        {
+////            throw new NotFoundException("Spot does not belong to the specified parking lot");
+//            return null;
+//        }
+//
+//        spot.setPricePerHour(pricePerHour);
+//        Spot savedSpot=spotRepository1.save(spot);
+
+        List<Spot> spotList=parkingLot.getSpotList();
+        for(Spot profile: spotList){
+            if(profile.getId()==spotId){
+                profile.setPricePerHour(pricePerHour);
+                spot=spotRepository1.save(profile);
+            }
         }
 
-        spot.setPricePerHour(pricePerHour);
-        Spot savedSpot=spotRepository1.save(spot);
 
-        return savedSpot;
+        return spot;
     }
 
     @Override
