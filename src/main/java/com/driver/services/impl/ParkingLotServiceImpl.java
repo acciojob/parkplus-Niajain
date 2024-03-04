@@ -26,7 +26,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
 
         parkingLot.setName(name);
         parkingLot.setAddress(address);
-
+        parkingLot.setSpotList(new ArrayList<>());
         return parkingLotRepository1.save(parkingLot);
     }
 
@@ -47,6 +47,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         spot.setNumberOfWheels(numberOfWheels);
         spot.setSpotType(spotType);
         spot.setOccupied(false);
+        spot.setReservationList(new ArrayList<>());
         List<Spot> spots = parkingLot.getSpotList();
         if (spots == null) {
             spots = new ArrayList<>();
@@ -54,8 +55,8 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         spots.add(spot);
         parkingLot.setSpotList(spots);
 
-//        parkingLotRepository1.save(parkingLot);
-        return spotRepository1.save(spot);
+        parkingLotRepository1.save(parkingLot);
+        return spot;
 
 
     }
