@@ -30,14 +30,14 @@ public class ReservationServiceImpl implements ReservationService {
         Optional<User> optionalUser=userRepository3.findById(userId);
         if(!optionalUser.isPresent())
         {
-            throw new NotFoundException("User not found");
+            throw new NotFoundException("Cannot make reservation");
         }
         User user=optionalUser.get();
 
         Optional<ParkingLot> optionalParkingLot=parkingLotRepository3.findById(parkingLotId);
         if(!optionalParkingLot.isPresent())
         {
-            throw new NotFoundException("User not found");
+            throw new NotFoundException("Cannot make reservation");
         }
         ParkingLot parkingLot=optionalParkingLot.get();
 
@@ -47,7 +47,7 @@ public class ReservationServiceImpl implements ReservationService {
         List<Spot> filteredSpots = filterSpotsByType(availableSpots, numberOfWheels);
         
         if (filteredSpots.isEmpty()) {
-            throw new NotFoundException("No spot available for reservation");
+            throw new NotFoundException("Cannot make reservation");
         }
         Spot minPriceSpot = filteredSpots.get(0);
         double minPrice = filteredSpots.get(0).getPricePerHour()*timeInHours;
@@ -84,6 +84,7 @@ public class ReservationServiceImpl implements ReservationService {
         spotReservations.add(savedReservation);
         minPriceSpot.setReservationList(spotReservations);
         spotRepository3.save(minPriceSpot); // Save the updated spot entity
+
 
         return savedReservation;
 
