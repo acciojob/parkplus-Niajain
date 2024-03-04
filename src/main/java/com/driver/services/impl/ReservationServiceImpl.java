@@ -47,7 +47,7 @@ public class ReservationServiceImpl implements ReservationService {
         List<Spot> filteredSpots = filterSpotsByType(availableSpots, numberOfWheels);
         
         if (filteredSpots.isEmpty()) {
-            throw new Exception("No spot available for reservation");
+            throw new NotFoundException("No spot available for reservation");
         }
         Spot minPriceSpot = filteredSpots.get(0);
         double minPrice = filteredSpots.get(0).getPricePerHour()*timeInHours;
@@ -60,7 +60,7 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         if (minPriceSpot == null) {
-            throw new Exception("Cannot make reservation");
+            throw new NotFoundException("Cannot make reservation");
         }
 
         Reservation reservation = new Reservation();

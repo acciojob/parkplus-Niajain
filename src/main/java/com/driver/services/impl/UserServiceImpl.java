@@ -18,14 +18,15 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository4;
     @Override
     public void deleteUser(Integer userId) {
-        Optional<User> optionalUser=userRepository4.findById(userId);
-//        if(!optionalUser.isPresent())
-//        {
-//            throw new NotFoundException("User doesn't exists");
-//        }
-        User user=optionalUser.get();
-
-        userRepository4.delete(user);
+//        Optional<User> optionalUser=userRepository4.findById(userId);
+////        if(!optionalUser.isPresent())
+////        {
+////            throw new NotFoundException("User doesn't exists");
+////        }
+//        User user=optionalUser.get();
+//
+//        userRepository4.delete(user);
+        userRepository4.deleteById(userId);
     }
 
     @Override

@@ -49,9 +49,9 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         spot.setOccupied(false);
         spot.setReservationList(new ArrayList<>());
         List<Spot> spots = parkingLot.getSpotList();
-        if (spots == null) {
-            spots = new ArrayList<>();
-        }
+//        if (spots == null) {
+//            spots = new ArrayList<>();
+//        }
         spots.add(spot);
         parkingLot.setSpotList(spots);
 
@@ -95,31 +95,33 @@ public class ParkingLotServiceImpl implements ParkingLotService {
 
     @Override
     public Spot updateSpot(int parkingLotId, int spotId, int pricePerHour) {
-        Optional<ParkingLot> optionalParkingLot=parkingLotRepository1.findById(parkingLotId);
-        if(!optionalParkingLot.isPresent())
-        {
-//            throw new NotFoundException("Parking lot doesn't exist");
-            return null;
-        }
-        ParkingLot parkingLot=optionalParkingLot.get();
-
-        Optional<Spot> optionalSpot=spotRepository1.findById(spotId);
-        if(!optionalSpot.isPresent())
-        {
-//            throw new NotFoundException("Spot doesn't exist");
-            return null;
-        }
-        Spot spot=optionalSpot.get();
-
-//        if(spot.getParkingLot().getId()!=parkingLotId)
+//        Optional<ParkingLot> optionalParkingLot=parkingLotRepository1.findById(parkingLotId);
+//        if(!optionalParkingLot.isPresent())
 //        {
-////            throw new NotFoundException("Spot does not belong to the specified parking lot");
+////            throw new NotFoundException("Parking lot doesn't exist");
 //            return null;
 //        }
+//        ParkingLot parkingLot=optionalParkingLot.get();
 //
-//        spot.setPricePerHour(pricePerHour);
-//        Spot savedSpot=spotRepository1.save(spot);
+//        Optional<Spot> optionalSpot=spotRepository1.findById(spotId);
+//        if(!optionalSpot.isPresent())
+//        {
+////            throw new NotFoundException("Spot doesn't exist");
+//            return null;
+//        }
+//        Spot spot=optionalSpot.get();
+//
+////        if(spot.getParkingLot().getId()!=parkingLotId)
+////        {
+//////            throw new NotFoundException("Spot does not belong to the specified parking lot");
+////            return null;
+////        }
+////
+////        spot.setPricePerHour(pricePerHour);
+////        Spot savedSpot=spotRepository1.save(spot);
 
+        ParkingLot parkingLot=parkingLotRepository1.findById(parkingLotId).get();
+        Spot spot=null;
         List<Spot> spotList=parkingLot.getSpotList();
         for(Spot profile: spotList){
             if(profile.getId()==spotId){
@@ -127,8 +129,6 @@ public class ParkingLotServiceImpl implements ParkingLotService {
                 spot=spotRepository1.save(profile);
             }
         }
-
-
         return spot;
     }
 
