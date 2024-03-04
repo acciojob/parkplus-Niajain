@@ -73,10 +73,10 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     @Override
     public void deleteSpot(int spotId) {
         Optional<Spot> optionalSpot=spotRepository1.findById(spotId);
-        if(!optionalSpot.isPresent())
-        {
-            throw new NotFoundException("Spot Id doesn't exist");
-        }
+//        if(!optionalSpot.isPresent())
+//        {
+//            throw new NotFoundException("Spot Id doesn't exist");
+//        }
         Spot spot=optionalSpot.get();
 
         ParkingLot parkingLot = spot.getParkingLot();
@@ -100,10 +100,10 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         ParkingLot parkingLot=optionalParkingLot.get();
 
         Optional<Spot> optionalSpot=spotRepository1.findById(spotId);
-        if(!optionalSpot.isPresent())
-        {
-            throw new NotFoundException("Spot doesn't exist");
-        }
+//        if(!optionalSpot.isPresent())
+//        {
+//            throw new NotFoundException("Spot doesn't exist");
+//        }
         Spot spot=optionalSpot.get();
 
         if(spot.getParkingLot().getId()!=parkingLotId)
@@ -119,11 +119,11 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     @Override
     public void deleteParkingLot(int parkingLotId) {
         Optional<ParkingLot> optionalParkingLot=parkingLotRepository1.findById(parkingLotId);
-
-        if(!optionalParkingLot.isPresent())
-        {
-            throw new NotFoundException("Parking lot doesn't exists");
-        }
+//
+//        if(!optionalParkingLot.isPresent())
+//        {
+//            throw new NotFoundException("Parking lot doesn't exists");
+//        }
         ParkingLot parkingLot=optionalParkingLot.get();
 
         List<Spot> spots=parkingLot.getSpotList();
