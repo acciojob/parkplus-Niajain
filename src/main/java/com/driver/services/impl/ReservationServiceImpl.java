@@ -60,7 +60,8 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         if (minPriceSpot == null) {
-            throw new NotFoundException("Cannot make reservation");
+//            throw new NotFoundException("Cannot make reservation");
+            return null;
         }
 
         Reservation reservation = new Reservation();
