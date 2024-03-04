@@ -54,7 +54,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         if(availableSpot==null)
         {
-            throw new NotFoundException("Cannot make reservation");
+            throw new Exception("Cannot make reservation");
         }
 
 
