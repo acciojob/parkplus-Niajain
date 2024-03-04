@@ -38,6 +38,11 @@ public class ReservationServiceImpl implements ReservationService {
 
         List<Spot> availableSpots = parkingLot.getSpotList();
 
+        if(availableSpots.isEmpty())
+        {
+            throw new NotFoundException("Cannot make reservation");
+        }
+
         // Filter spots based on their types
         List<Spot> filteredSpots = filterSpotsByType(availableSpots, numberOfWheels);
         Spot minPriceSpot;
