@@ -59,23 +59,15 @@ public class ReservationServiceImpl implements ReservationService {
         reservation.setNumberOfHours(timeInHours);
 
         availableSpot.setOccupied(true);
-//        bestSpot.getReservationList().add(reservation);
-//
-//        user.getReservationList().add(reservation);
-//
-//        //saving user and spot instead of reservation for bidirectional save
-//        userRepository3.save(user);
-//        spotRepository3.save(bestSpot);
 
-        Reservation savedReservation=reservationRepository3.save(reservation);
         List<Reservation> userReservations = user.getReservationList();
-        userReservations.add(savedReservation);
+        userReservations.add(reservation);
         user.setReservationList(userReservations);
         userRepository3.save(user); // Save the updated user entity
 
 
         List<Reservation> spotReservations = availableSpot.getReservationList();
-        spotReservations.add(savedReservation);
+        spotReservations.add(reservation);
         availableSpot.setReservationList(spotReservations);
         spotRepository3.save(availableSpot); // Save the updated spot entity
 
