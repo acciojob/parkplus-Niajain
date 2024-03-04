@@ -65,12 +65,18 @@ public class ReservationServiceImpl implements ReservationService {
 
         }
 
+        Payment payment = new Payment();
+        payment.setPaymentCompleted(false); // Assuming the payment is not completed initially
+        payment.setPaymentMode(PaymentMode.CASH);
+
         Reservation reservation = new Reservation();
         reservation.setUser(user);
         reservation.setSpot(minPriceSpot);
         reservation.setNumberOfHours(timeInHours);
 
         minPriceSpot.setOccupied(true);
+
+        reservation.setPayment(payment);
 
         // Save the reservation
         Reservation savedReservation = reservationRepository3.save(reservation);
