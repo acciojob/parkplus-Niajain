@@ -41,14 +41,19 @@ public class ReservationServiceImpl implements ReservationService {
         Spot availableSpot = null;
         int minPrice = Integer.MAX_VALUE;
 
-        for (Spot spot : parkingLot.getSpotList()) {
-            if (!spot.getOccupied() && spot.getNumberOfWheels() >= numberOfWheels) {
-                if (spot.getPricePerHour() * timeInHours < minPrice) {
-                    availableSpot = spot;
-                    minPrice = spot.getPricePerHour() * timeInHours;
+        for (Spot parkingSpot : parkingLot.getSpotList()) {
+            if (!parkingSpot.getOccupied() &&
+                    (numberOfWheels != 4 || parkingSpot.getSpotType() != SpotType.TWO_WHEELER) &&
+                    (numberOfWheels <= 4 || parkingSpot.getSpotType() == SpotType.OTHERS)) {
+
+                int spotPrice = parkingSpot.getPricePerHour() * timeInHours;
+                if (spotPrice < minPrice) {
+                    availableSpot = parkingSpot;
+                    minPrice = spotPrice;
                 }
             }
         }
+
         if (availableSpot == null) {
             throw new Exception("Cannot make reservation");
         }
@@ -63,15 +68,13 @@ public class ReservationServiceImpl implements ReservationService {
         List<Reservation> userReservations = user.getReservationList();
         userReservations.add(reservation);
         user.setReservationList(userReservations);
-        userRepository3.save(user); // Save the updated user entity
-
+        userRepository3.save(user);
 
         List<Reservation> spotReservations = availableSpot.getReservationList();
         spotReservations.add(reservation);
         availableSpot.setReservationList(spotReservations);
-        spotRepository3.save(availableSpot); // Save the updated spot entity
+        spotRepository3.save(availableSpot);
 
         return reservation;
     }
-
 }
