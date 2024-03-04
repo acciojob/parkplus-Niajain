@@ -41,10 +41,10 @@ public class ReservationServiceImpl implements ReservationService {
         // Filter spots based on their types
         List<Spot> filteredSpots = filterSpotsByType(availableSpots, numberOfWheels);
         
-//        if (filteredSpots.isEmpty()) {
-//            throw new NotFoundException("Cannot make reservation");
-////            return null;
-//        }
+        if (filteredSpots.isEmpty()) {
+            throw new NotFoundException("Cannot make reservation");
+//            return null;
+        }
         Spot minPriceSpot = filteredSpots.get(0);
         double minPrice = filteredSpots.get(0).getPricePerHour()*timeInHours;
         for (Spot spot : filteredSpots) {

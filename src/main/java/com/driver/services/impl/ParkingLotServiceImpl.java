@@ -62,9 +62,9 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     }
 
     private SpotType CalculateSpotType(Integer numberOfWheels) {
-        if(numberOfWheels==2)
+        if(numberOfWheels<=2)
             return SpotType.TWO_WHEELER;
-        else if(numberOfWheels==4)
+        else if(numberOfWheels<=4)
             return SpotType.FOUR_WHEELER;
         else
             return SpotType.OTHERS;
