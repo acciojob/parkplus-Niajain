@@ -56,7 +56,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         parkingLot.setSpotList(spots);
 
         parkingLotRepository1.save(parkingLot);
-        return spotRepository1.save(spot);
+        return spot;
 
 
     }
@@ -72,21 +72,23 @@ public class ParkingLotServiceImpl implements ParkingLotService {
 
     @Override
     public void deleteSpot(int spotId) {
-        Optional<Spot> optionalSpot=spotRepository1.findById(spotId);
-        if(!optionalSpot.isPresent())
-        {
-            throw new NotFoundException("Spot Id doesn't exist");
-        }
-        Spot spot=optionalSpot.get();
+//        Optional<Spot> optionalSpot=spotRepository1.findById(spotId);
+//        if(!optionalSpot.isPresent())
+//        {
+//            throw new NotFoundException("Spot Id doesn't exist");
+//        }
+//        Spot spot=optionalSpot.get();
+//
+//        ParkingLot parkingLot = spot.getParkingLot();
+//
+//        // Remove the spot from the list of spots associated with the parking lot
+//        List<Spot> spots = parkingLot.getSpotList();
+//        spots.remove(spot);
+//        parkingLot.setSpotList(spots);
+//
+//        spotRepository1.delete(spot);
 
-        ParkingLot parkingLot = spot.getParkingLot();
-
-        // Remove the spot from the list of spots associated with the parking lot
-        List<Spot> spots = parkingLot.getSpotList();
-        spots.remove(spot);
-        parkingLot.setSpotList(spots);
-
-        spotRepository1.delete(spot);
+        spotRepository1.deleteById(spotId);
 
 
     }
@@ -116,27 +118,29 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         }
 
         spot.setPricePerHour(pricePerHour);
+        Spot savedSpot=spotRepository1.save(spot);
 
-        return spotRepository1.save(spot);
+        return savedSpot;
     }
 
     @Override
     public void deleteParkingLot(int parkingLotId) {
-        Optional<ParkingLot> optionalParkingLot=parkingLotRepository1.findById(parkingLotId);
-
-        if(!optionalParkingLot.isPresent())
-        {
-            throw new NotFoundException("Parking lot doesn't exists");
-        }
-        ParkingLot parkingLot=optionalParkingLot.get();
-
-        List<Spot> spots=parkingLot.getSpotList();
-        if((spots!=null)&&(!spots.isEmpty()))
-        {
-            for(Spot spot:spots)
-                spotRepository1.delete(spot);
-        }
-
-        parkingLotRepository1.delete(parkingLot);
+//        Optional<ParkingLot> optionalParkingLot=parkingLotRepository1.findById(parkingLotId);
+//
+//        if(!optionalParkingLot.isPresent())
+//        {
+//            throw new NotFoundException("Parking lot doesn't exists");
+//        }
+//        ParkingLot parkingLot=optionalParkingLot.get();
+//
+//        List<Spot> spots=parkingLot.getSpotList();
+//        if((spots!=null)&&(!spots.isEmpty()))
+//        {
+//            for(Spot spot:spots)
+//                spotRepository1.delete(spot);
+//        }
+//
+//        parkingLotRepository1.delete(parkingLot);
+        parkingLotRepository1.deleteById(parkingLotId);
     }
 }
