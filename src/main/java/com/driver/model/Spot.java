@@ -1,5 +1,7 @@
 package com.driver.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -10,6 +12,7 @@ public class Spot {
     private int id;
     @ManyToOne
     @JoinColumn
+    @JsonIgnore
     private ParkingLot parkingLot;
 
     @OneToMany(mappedBy = "spot",cascade = CascadeType.ALL)
@@ -19,6 +22,7 @@ public class Spot {
     private Integer pricePerHour;
     private Boolean occupied;
 
+    private Integer numberOfWheels;
     public int getId() {
         return id;
     }
@@ -65,5 +69,13 @@ public class Spot {
 
     public void setOccupied(Boolean occupied) {
         this.occupied = occupied;
+    }
+
+    public Integer getNumberOfWheels() {
+        return this.numberOfWheels;
+    }
+
+    public void setNumberOfWheels(Integer numberOfWheels) {
+        this.numberOfWheels = numberOfWheels;
     }
 }

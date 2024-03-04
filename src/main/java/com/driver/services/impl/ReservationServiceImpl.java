@@ -1,5 +1,6 @@
 package com.driver.services.impl;
 
+import com.driver.Exception.NotFoundException;
 import com.driver.model.*;
 import com.driver.repository.ParkingLotRepository;
 import com.driver.repository.ReservationRepository;
@@ -9,7 +10,9 @@ import com.driver.services.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
@@ -24,5 +27,74 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Reservation reserveSpot(Integer userId, Integer parkingLotId, Integer timeInHours, Integer numberOfWheels) throws Exception {
 
+        Optional<User> optionalUser=userRepository3.findById(userId);
+        if(!optionalUser.isPresent())
+        {
+            throw new NotFoundException("User not found");
+        }
+        User user=optionalUser.get();
+
+        Optional<ParkingLot> optionalParkingLot=parkingLotRepository3.findById(parkingLotId);
+        if(!optionalParkingLot.isPresent())
+        {
+            throw new NotFoundException("User not found");
+        }
+        ParkingLot parkingLot=optionalParkingLot.get();
+
+        List<Spot> availableSpots = spotRepository3.findAvailableSpotsByParkingLotId(parkingLotId);
+
+        // Filter spots based on their types
+        List<Spot> filteredSpots = filterSpotsByType(availableSpots, numberOfWheels);
+        
+        if (filteredSpots.isEmpty()) {
+            throw new Exception("No spot available for reservation");
+        }
+        Spot minPriceSpot = filteredSpots.get(0);
+        double minPrice = filteredSpots.get(0).getPricePerHour()*timeInHours;
+        for (Spot spot : filteredSpots) {
+            double totalPrice = spot.getPricePerHour() * timeInHours;
+            if (totalPrice < minPrice) {
+                minPrice = totalPrice;
+                minPriceSpot = spot;
+            }
+        }
+
+        if (minPriceSpot == null) {
+            throw new Exception("Cannot make reservation");
+        }
+
+        Reservation reservation = new Reservation();
+        reservation.setUser(user);
+        reservation.setSpot(minPriceSpot);
+        reservation.setNumberOfHours(timeInHours);
+
+        minPriceSpot.setOccupied(true);
+
+        // Save the reservation
+        Reservation savedReservation = reservationRepository3.save(reservation);
+
+        List<Reservation> userReservations = user.getReservationList();
+        userReservations.add(savedReservation);
+        user.setReservationList(userReservations);
+        userRepository3.save(user); // Save the updated user entity
+
+
+        List<Reservation> spotReservations = minPriceSpot.getReservationList();
+        spotReservations.add(savedReservation);
+        minPriceSpot.setReservationList(spotReservations);
+        spotRepository3.save(minPriceSpot); // Save the updated spot entity
+
+        return savedReservation;
+
+    }
+
+    private List<Spot> filterSpotsByType(List<Spot> availableSpots, Integer numberOfWheels) {
+        List<Spot> filteredSpots = new ArrayList<>();
+        for (Spot spot : availableSpots) {
+            if (!spot.getOccupied() && spot.getNumberOfWheels() >= numberOfWheels) {
+                filteredSpots.add(spot);
+            }
+        }
+        return filteredSpots;
     }
 }
