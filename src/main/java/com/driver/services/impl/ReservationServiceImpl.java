@@ -25,44 +25,40 @@ public class ReservationServiceImpl implements ReservationService {
     ReservationRepository reservationRepository3;
     @Autowired
     ParkingLotRepository parkingLotRepository3;
+
     @Override
 
     public Reservation reserveSpot(Integer userId, Integer parkingLotId, Integer timeInHours, Integer numberOfWheels) throws Exception {
-
         User user;
         ParkingLot parkingLot;
-        try{
+        try {
             user = userRepository3.findById(userId).get();
             parkingLot = parkingLotRepository3.findById(parkingLotId).get();
         } catch (Exception e) {
             throw new Exception("Cannot make reservation");
         }
 
-
         Spot availableSpot = null;
         int minPrice = Integer.MAX_VALUE;
 
-        for(Spot spot: parkingLot.getSpotList()){
-            if(!spot.getOccupied() && spot.getNumberOfWheels() >= numberOfWheels){
-                if(spot.getPricePerHour()*timeInHours < minPrice){
+        for (Spot spot : parkingLot.getSpotList()) {
+            if (!spot.getOccupied() && spot.getNumberOfWheels() >= numberOfWheels) {
+                if (spot.getPricePerHour() * timeInHours < minPrice) {
                     availableSpot = spot;
-                    minPrice = spot.getPricePerHour()*timeInHours;
+                    minPrice = spot.getPricePerHour() * timeInHours;
                 }
             }
         }
-
-        if(availableSpot==null){
+        if (availableSpot == null) {
             throw new Exception("Cannot make reservation");
         }
 
-
         Reservation reservation = new Reservation();
-        reservation.setUser(user);
         reservation.setSpot(availableSpot);
+        reservation.setUser(user);
         reservation.setNumberOfHours(timeInHours);
 
         availableSpot.setOccupied(true);
-
 
         List<Reservation> userReservations = user.getReservationList();
         userReservations.add(reservation);
@@ -75,18 +71,7 @@ public class ReservationServiceImpl implements ReservationService {
         availableSpot.setReservationList(spotReservations);
         spotRepository3.save(availableSpot); // Save the updated spot entity
 
-
         return reservation;
-
     }
 
-    private List<Spot> filterSpotsByType(List<Spot> availableSpots, Integer numberOfWheels) {
-        List<Spot> filteredSpots = new ArrayList<>();
-        for (Spot spot : availableSpots) {
-            if (!spot.getOccupied() && spot.getNumberOfWheels() >= numberOfWheels) {
-                filteredSpots.add(spot);
-            }
-        }
-        return filteredSpots;
-    }
 }
