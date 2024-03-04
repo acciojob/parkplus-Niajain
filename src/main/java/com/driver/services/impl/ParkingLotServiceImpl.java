@@ -56,7 +56,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         parkingLot.setSpotList(spots);
 
         parkingLotRepository1.save(parkingLot);
-        return spot;
+        return spotRepository1.save(spot);
 
 
     }
@@ -73,10 +73,10 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     @Override
     public void deleteSpot(int spotId) {
         Optional<Spot> optionalSpot=spotRepository1.findById(spotId);
-//        if(!optionalSpot.isPresent())
-//        {
-//            throw new NotFoundException("Spot Id doesn't exist");
-//        }
+        if(!optionalSpot.isPresent())
+        {
+            throw new NotFoundException("Spot Id doesn't exist");
+        }
         Spot spot=optionalSpot.get();
 
         ParkingLot parkingLot = spot.getParkingLot();
@@ -88,6 +88,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
 
         spotRepository1.delete(spot);
 
+
     }
 
     @Override
@@ -95,20 +96,23 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         Optional<ParkingLot> optionalParkingLot=parkingLotRepository1.findById(parkingLotId);
         if(!optionalParkingLot.isPresent())
         {
-            throw new NotFoundException("Parking lot doesn't exist");
+//            throw new NotFoundException("Parking lot doesn't exist");
+            return null;
         }
         ParkingLot parkingLot=optionalParkingLot.get();
 
         Optional<Spot> optionalSpot=spotRepository1.findById(spotId);
-//        if(!optionalSpot.isPresent())
-//        {
+        if(!optionalSpot.isPresent())
+        {
 //            throw new NotFoundException("Spot doesn't exist");
-//        }
+            return null;
+        }
         Spot spot=optionalSpot.get();
 
         if(spot.getParkingLot().getId()!=parkingLotId)
         {
-            throw new NotFoundException("Spot does not belong to the specified parking lot");
+//            throw new NotFoundException("Spot does not belong to the specified parking lot");
+            return null;
         }
 
         spot.setPricePerHour(pricePerHour);
@@ -119,11 +123,11 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     @Override
     public void deleteParkingLot(int parkingLotId) {
         Optional<ParkingLot> optionalParkingLot=parkingLotRepository1.findById(parkingLotId);
-//
-//        if(!optionalParkingLot.isPresent())
-//        {
-//            throw new NotFoundException("Parking lot doesn't exists");
-//        }
+
+        if(!optionalParkingLot.isPresent())
+        {
+            throw new NotFoundException("Parking lot doesn't exists");
+        }
         ParkingLot parkingLot=optionalParkingLot.get();
 
         List<Spot> spots=parkingLot.getSpotList();
