@@ -36,29 +36,34 @@ public class ReservationServiceImpl implements ReservationService {
             throw new Exception("Cannot make reservation");
         }
 
-        List<Spot> availableSpots = spotRepository3.findAvailableSpotsByParkingLotId(parkingLotId);
+        List<Spot> availableSpots = parkingLot.getSpotList();
 
         // Filter spots based on their types
         List<Spot> filteredSpots = filterSpotsByType(availableSpots, numberOfWheels);
-        
+        Spot minPriceSpot;
         if (filteredSpots.isEmpty()) {
             throw new NotFoundException("Cannot make reservation");
 //            return null;
         }
-        Spot minPriceSpot = filteredSpots.get(0);
-        double minPrice = filteredSpots.get(0).getPricePerHour()*timeInHours;
-        for (Spot spot : filteredSpots) {
-            double totalPrice = spot.getPricePerHour() * timeInHours;
-            if (totalPrice < minPrice) {
-                minPrice = totalPrice;
-                minPriceSpot = spot;
+
+        else
+        {
+            minPriceSpot = filteredSpots.get(0);
+            double minPrice = filteredSpots.get(0).getPricePerHour()*timeInHours;
+            for (Spot spot : filteredSpots) {
+                double totalPrice = spot.getPricePerHour() * timeInHours;
+                if (totalPrice < minPrice) {
+                    minPrice = totalPrice;
+                    minPriceSpot = spot;
+                }
+            }
+            if (minPriceSpot == null) {
+                throw new NotFoundException("Cannot make reservation");
+//            return null;
             }
         }
 
-        if (minPriceSpot == null) {
-            throw new NotFoundException("Cannot make reservation");
-//            return null;
-        }
+
 
         Payment payment = new Payment();
         payment.setPaymentCompleted(false); // Assuming the payment is not completed initially

@@ -21,12 +21,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment pay(Integer reservationId, int amountSent, String mode) throws Exception {
-        Optional<Reservation> optionalReservation=reservationRepository2.findById(reservationId);
-        if(!optionalReservation.isPresent())
-        {
-            throw new NotFoundException("Reservation not found");
-        }
-        Reservation reservation=optionalReservation.get();
+        Reservation reservation = reservationRepository2.findById(reservationId).get();
 
         double billAmount=calculateBillAmount(reservation);
 

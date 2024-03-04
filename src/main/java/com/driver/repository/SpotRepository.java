@@ -12,5 +12,5 @@ public interface SpotRepository extends JpaRepository<Spot, Integer>{
     @Override
     Optional<Spot> findById(Integer id);
 
-    List<Spot> findAvailableSpotsByParkingLotId(Integer parkingLotId);
+
 }
