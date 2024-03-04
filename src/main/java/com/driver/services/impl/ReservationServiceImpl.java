@@ -8,6 +8,7 @@ import com.driver.repository.SpotRepository;
 import com.driver.repository.UserRepository;
 import com.driver.services.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -37,34 +38,46 @@ public class ReservationServiceImpl implements ReservationService {
             throw new Exception("Cannot make reservation");
         }
 
-        Spot bestSpot = null;
+        Spot availableSpot = null;
         int minPrice = Integer.MAX_VALUE;
 
         for(Spot spot: parkingLot.getSpotList()){
             if(!spot.getOccupied() && isSpotBigEnough(numberOfWheels, spot)){
                 if(spot.getPricePerHour()*timeInHours < minPrice){
-                    bestSpot = spot;
+                    availableSpot = spot;
                     minPrice = spot.getPricePerHour()*timeInHours;
                 }
             }
         }
-        if(bestSpot==null){
+        if(availableSpot==null){
             throw new Exception("Cannot make reservation");
         }
 
         Reservation reservation = new Reservation();
-        reservation.setSpot(bestSpot);
+        reservation.setSpot(availableSpot);
         reservation.setUser(user);
         reservation.setNumberOfHours(timeInHours);
 
-        bestSpot.setOccupied(true);
-        bestSpot.getReservationList().add(reservation);
+        availableSpot.setOccupied(true);
+//        bestSpot.getReservationList().add(reservation);
+//
+//        user.getReservationList().add(reservation);
+//
+//        //saving user and spot instead of reservation for bidirectional save
+//        userRepository3.save(user);
+//        spotRepository3.save(bestSpot);
 
-        user.getReservationList().add(reservation);
+        Reservation savedReservation=reservationRepository3.save(reservation);
+        List<Reservation> userReservations = user.getReservationList();
+        userReservations.add(savedReservation);
+        user.setReservationList(userReservations);
+        userRepository3.save(user); // Save the updated user entity
 
-        //saving user and spot instead of reservation for bidirectional save
-        userRepository3.save(user);
-        spotRepository3.save(bestSpot);
+
+        List<Reservation> spotReservations = availableSpot.getReservationList();
+        spotReservations.add(savedReservation);
+        availableSpot.setReservationList(spotReservations);
+        spotRepository3.save(availableSpot); // Save the updated spot entity
 
         return reservation;
     }
